@@ -1,41 +1,34 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet,ScrollView } from "react-native";
 import SearchBar from "../components/SearchBar";
-import Yelp from "../api/Yelp";
+import useResults from '../hooks/useResults';
+import ResultList from '../components/ResultsList';
 
 const SearchScreens = () => {
   const [term, setTerm] = useState('');
-  const [result, setResult] = useState([]);
-  const [errorMessage, setErrorMessage] = useState('');
-
-  const searchApi = async (searchTerm) => {
-     // console.log('execute');
-    try {
-      const response = await Yelp.get("/search", {
-        params: {
-          limit: 50,
-          term: searchTerm,
-          location: "san jose"
-        }
-      });
-      setResult(response.data.businesses);
-    } catch (err) {
-       setErrorMessage('¡Ups!... Algo Salio Mal');
-    }
+  const [searchApi,results,errorMessage] = useResults();//importamos los valores exportados desde useResult
+                                                       // para que no se altere la logica del codigo
+  const filterResultsByPrice = (price) => {
+    //price='$' o '$$' o '$$$'
+    return results.filter( result => {
+      return result.price === price;
+    });
   };
-
-  // llamada a serachApi cuando el componente se renderiza por primera vez
-  //codigo malo se ejecutan consultas indefinidamoente, comprobar haciendo un console.log en este componente
- // searchApi('pasta')
   return (
-    <View>
+    //El flex:1 en el view es para que el scroollView se pueda ver verticalmente en android, en ios no es necesario agregar
+    <View style={{ flex:1 }}>
       <SearchBar
         term={term}
         onTermChange={setTerm}
         onTermSubmit={() => searchApi(term)} //Se ejecuta cuando se presiona enter
       />
       {errorMessage? <Text>{errorMessage}</Text>:null}
-      <Text>Encontramos {result.length} resultados</Text>
+      <Text>Encontramos {results.length} resultados</Text>
+      <ScrollView>
+      <ResultList results={filterResultsByPrice('$')} title="Cost Effective"/>
+      <ResultList results={filterResultsByPrice('$$')} title="Bit Pricier"/>
+      <ResultList results={filterResultsByPrice('$$$')} title="Big Spender!"/>
+      </ScrollView>
     </View>
   );
 };
