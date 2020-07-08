@@ -3,6 +3,9 @@ import { View, Text, Image, StyleSheet } from 'react-native';
 
 const ResultsDetail = ({result}) =>{
  //si a la imagen no le indicamos en el estilo una altura y ancho fijo no se mostrara
+if(!ResultsDetail.length){
+    return null;
+}
    return(
        <View style={styles.container}>
            <Image 

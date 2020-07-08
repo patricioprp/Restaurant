@@ -1,11 +1,13 @@
 import { createStackNavigator } from 'react-navigation-stack';
 import { createAppContainer } from 'react-navigation';
 
-import SearchScreens from './src/screens/SearchScreens'
+import SearchScreens from './src/screens/SearchScreens';
+import ResultsShowScreens from './src/screens/ResultsShowScreens';
 
 const navigator = createStackNavigator(
   {
-  search:SearchScreens
+  search: SearchScreens,
+  ResultsShow: ResultsShowScreens
 },{
   initialRouteName:'search',
   defaultNavigationOptions:{
